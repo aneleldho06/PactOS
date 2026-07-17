@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppAgreementsRouteImport } from './routes/_app.agreements'
+import { Route as AppAgreementsIdRouteImport } from './routes/_app.agreements.$id'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -33,30 +34,44 @@ const AppAgreementsRoute = AppAgreementsRouteImport.update({
   path: '/agreements',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAgreementsIdRoute = AppAgreementsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppAgreementsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/agreements': typeof AppAgreementsRoute
+  '/agreements': typeof AppAgreementsRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
+  '/agreements/$id': typeof AppAgreementsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/agreements': typeof AppAgreementsRoute
+  '/agreements': typeof AppAgreementsRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
+  '/agreements/$id': typeof AppAgreementsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
-  '/_app/agreements': typeof AppAgreementsRoute
+  '/_app/agreements': typeof AppAgreementsRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/agreements/$id': typeof AppAgreementsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/agreements' | '/dashboard'
+  fullPaths: '/' | '/agreements' | '/dashboard' | '/agreements/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/agreements' | '/dashboard'
-  id: '__root__' | '/' | '/_app' | '/_app/agreements' | '/_app/dashboard'
+  to: '/' | '/agreements' | '/dashboard' | '/agreements/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/_app/agreements'
+    | '/_app/dashboard'
+    | '/_app/agreements/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,16 +109,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgreementsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/agreements/$id': {
+      id: '/_app/agreements/$id'
+      path: '/$id'
+      fullPath: '/agreements/$id'
+      preLoaderRoute: typeof AppAgreementsIdRouteImport
+      parentRoute: typeof AppAgreementsRoute
+    }
   }
 }
 
+interface AppAgreementsRouteChildren {
+  AppAgreementsIdRoute: typeof AppAgreementsIdRoute
+}
+
+const AppAgreementsRouteChildren: AppAgreementsRouteChildren = {
+  AppAgreementsIdRoute: AppAgreementsIdRoute,
+}
+
+const AppAgreementsRouteWithChildren = AppAgreementsRoute._addFileChildren(
+  AppAgreementsRouteChildren,
+)
+
 interface AppRouteChildren {
-  AppAgreementsRoute: typeof AppAgreementsRoute
+  AppAgreementsRoute: typeof AppAgreementsRouteWithChildren
   AppDashboardRoute: typeof AppDashboardRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAgreementsRoute: AppAgreementsRoute,
+  AppAgreementsRoute: AppAgreementsRouteWithChildren,
   AppDashboardRoute: AppDashboardRoute,
 }
 
