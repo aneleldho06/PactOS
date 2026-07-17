@@ -10,6 +10,7 @@ import { RecipientAvatars } from "@/components/agreements/RecipientAvatars";
 import { ActivityCard } from "@/components/activity/ActivityCard";
 import { ExecutionModal } from "@/components/execution/ExecutionModal";
 import { money } from "@/lib/format";
+import type { Agreement, Block } from "@/lib/types";
 
 export const Route = createFileRoute("/_app/agreements/$id")({
   loader: ({ params }) => {
@@ -27,7 +28,7 @@ export const Route = createFileRoute("/_app/agreements/$id")({
 });
 
 function AgreementDetail() {
-  const a = Route.useLoaderData();
+  const a = Route.useLoaderData() as Agreement;
   const [open, setOpen] = useState(false);
   const events = mockActivity.filter((e) => e.agreementId === a.id);
   return (
@@ -51,7 +52,7 @@ function AgreementDetail() {
       <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className="rounded-2xl border bg-card p-6 shadow-elegant">
           <div className="text-xs uppercase tracking-wider text-muted-foreground">Flow</div>
-          <Timeline items={a.blocks.map((bl, i: number) => ({
+          <Timeline items={a.blocks.map((bl: Block, i: number) => ({
             id: bl.id,
             title: bl.title,
             subtitle: bl.subtitle,
