@@ -1,7 +1,7 @@
 # Project Status
 
-- **Current phase:** Backend control-plane foundation implemented; dependency install and integration validation pending
-- **Last updated:** 2026-07-17 23:24 IST
+- **Current phase:** Testnet deployment identity prepared; contract deployment pending
+- **Last updated:** 2026-07-17 23:39 IST
 
 ## Completed
 
@@ -14,6 +14,8 @@
 - Verified all contract crates with `cargo check --workspace` and generated optimized Wasm artifacts with `stellar contract build`.
 - Added NestJS control-plane scaffold under `backend/` with wallet challenge authentication, agreement metadata APIs, Stellar RPC wrappers, idempotent event indexing, templates, notifications, health checks, Prisma schema, Docker Compose, and CI workflow.
 - Normalized every Prisma schema model and enum declaration; Prisma formatting, validation, and client generation now succeed.
+- Aligned template JSON request validation with Prisma `InputJsonObject`; backend TypeScript build now succeeds.
+- Created the dedicated Stellar Testnet CLI identity `pactos-deployer`, funded it, and configured it as the initial PactOS admin for MVP deployment.
 
 ## Files created or modified
 
@@ -22,6 +24,7 @@
 - Project snapshot: `PROJECT_STATUS.md`
 - Soroban workspace: `Cargo.toml`, `Cargo.lock`, `contracts/**`
 - Contract docs/deployment: `docs/soroban-contracts.md`, `scripts/deploy-testnet.sh`, `.env.example`
+- Local deployment configuration: `.env` (ignored; contains no secret key)
 - Backend: `backend/**`, `.github/workflows/backend.yml`
 
 ## Architecture decisions
@@ -65,10 +68,12 @@
 - Contract events currently use the SDK-compatible compact event API and build with deprecation warnings; typed events remain a follow-up.
 - This source has not undergone an independent security audit and must not custody production assets until audited.
 - Prisma generation requires `DATABASE_URL`; use the documented local Compose connection string or an environment-specific database URL.
+- Testnet deployer identity is ready: `pactos-deployer` resolves to `GDJIXGE27JVFU6QX2I2G52E6BYN44K7LAPJIHSVMJV2OGU6XMDYBPBTP`; Horizon confirmed the account exists with 10,000 native Testnet XLM. No contracts have been deployed.
+- Testnet deployment attempt stopped before transaction submission: the local deployment environment sets `STELLAR_RPC_URL` but omits `STELLAR_NETWORK_PASSPHRASE`; Stellar CLI requires it when an RPC URL is explicitly configured. No PactOS contract IDs were created.
 
 ## Next recommended task
 
-- Generate and apply the initial Prisma migration against a clean Compose PostgreSQL database, then run the backend build and lint gates.
+- Add `STELLAR_NETWORK_PASSPHRASE=Test SDF Network ; September 2015` to the local deployment environment, then retry deployment using `pactos-deployer` as both deployer and initial admin.
 
 ## Build/test status
 
@@ -79,3 +84,4 @@
 - `npx prisma format` — passed on 2026-07-17.
 - `npx prisma validate` — passed on 2026-07-17 with the documented local `DATABASE_URL`.
 - `npx prisma generate` — passed on 2026-07-17 (Prisma Client 6.19.3).
+- `npm run build` (backend) — passed on 2026-07-17.
