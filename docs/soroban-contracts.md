@@ -64,3 +64,12 @@ Contract events use compact stable symbols: `agrc`, `agru`, `agrs`, `execstart`,
 4. Run `scripts/deploy-testnet.sh`; initialize each deployed contract using its alias and the configured admin address.
 
 Never put production secret keys in environment files, source control, or frontend code.
+
+## Stellar Testnet deployment (2026-07-18)
+
+- Network: Stellar Testnet (`Test SDF Network ; September 2015`); deployer/admin: `pactos-deployer` / `GDJIXGE27JVFU6QX2I2G52E6BYN44K7LAPJIHSVMJV2OGU6XMDYBPBTP`.
+- Deployed: Registry `CCH2PHPRG2E5TQZEBTCSKXALOHME75LEYTKB5GUTDA3TO22TQZ5QSLZD`; Runtime `CDF2BKUBBVWIEFG22EM537GKDDDL2IIVVJ3UXDIJT2YUUHJBZFID6TNF`; Distribution `CCOAGQMRVTQIW3Q33EMEOM7F2MEYUKKZ52YDWJE7IV6ATHUPXGCNGQI4`; Escrow `CBDKPKPGHP5AYFSZP7D3A5366IJKPT2XL26H7QROGLGP6TPNVVDK6RDQ`; Permission `CAFTFBEQQS2BESE64546QCZHY2NANXDTPTXACHWL5GM5DFXXVWLVANZN`; Treasury `CDYZGCP3SENRCJ2Q2XX5EBHGXGP7KSS2JQI446TBMZ45XKB7E3QBNORB`; Audit `CB5BY65ZU4L2Z4J3XRWNDS5BGUODVOYT2EPVCTNDIQXCMBS2C4I22QM4`.
+- Initialized: Registry, Runtime, Escrow, Permission, Audit, and Treasury. Distribution has no initializer.
+- Verified read calls: Runtime `execution_nonce` returned `0`; Permission `has_role` returned `false`; Audit `sequence` returned `0`. Registry and Escrow `get` correctly returned their `NotFound` contract error for an all-zero unknown ID. Distribution exposes no read-only entry point; its deployed interface was inspected through Stellar CLI.
+- Treasury verification: initialized by `pactos-deployer` with `fee_bps = 0`; the deployed `fee_bps` read returned `0` without error. Initialization transaction: `f7c39cd05b285d0a7f95abd303720ce328cd9d8e8a237020c0257962ab5564d3`.
+- Backend integration verification: Testnet RPC was healthy, all seven configured IDs loaded, Treasury reads simulated, and a prepared signed Treasury transaction submitted through the backend reached `SUCCESS` (`f477613f060895144aacc8a96cb1b4a38777e2c5c7bdbb4c2c32096d9b149494`). Its `feecfg` event decoded to `0` and was stored exactly once by the durable indexer.

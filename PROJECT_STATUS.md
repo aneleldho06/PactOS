@@ -1,7 +1,7 @@
 # Project Status
 
-- **Current phase:** Testnet deployment identity prepared; contract deployment pending
-- **Last updated:** 2026-07-17 23:39 IST
+- **Current phase:** Stellar Testnet deployment and backend integration validated
+- **Last updated:** 2026-07-18 16:51 IST
 
 ## Completed
 
@@ -16,6 +16,15 @@
 - Normalized every Prisma schema model and enum declaration; Prisma formatting, validation, and client generation now succeed.
 - Aligned template JSON request validation with Prisma `InputJsonObject`; backend TypeScript build now succeeds.
 - Created the dedicated Stellar Testnet CLI identity `pactos-deployer`, funded it, and configured it as the initial PactOS admin for MVP deployment.
+- Configured `STELLAR_NETWORK_PASSPHRASE=Test SDF Network ; September 2015` in the deployment environment.
+- Deployed all seven PactOS Wasm contracts to Stellar Testnet and recorded their IDs in environment configuration.
+- Initialized Agreement Registry, Agreement Runtime, Escrow, Permission, and Audit with the configured admin. Distribution has no initializer.
+- Verified deployed read interfaces: Runtime returned nonce `0`, Permission returned `false` for an unassigned role, Audit returned sequence `0`; Registry and Escrow returned their expected `NotFound` error for an unknown ID.
+- Initialized Treasury with the configured admin and `fee_bps = 0`; a deployed `fee_bps` read returned `0` without error.
+- Validated the backend against Testnet: RPC health was `healthy`, all seven configured contract IDs were accepted, and a Treasury `fee_bps` invocation simulated successfully.
+- Validated non-custodial signed-transaction submission through the backend wrapper. Transaction `f477613f060895144aacc8a96cb1b4a38777e2c5c7bdbb4c2c32096d9b149494` reached `SUCCESS` on Testnet.
+- Corrected backend event pagination for the Testnet RPC’s five-contract-per-filter limit and `pagination.cursor` request shape; decoded Treasury `feecfg` events now persist as `"feecfg"` / `0`.
+- Validated event projections in PostgreSQL: Testnet events created durable inbox receipts, contract-event rows, and outbox rows; an immediate replay poll produced no duplicates.
 
 ## Files created or modified
 
@@ -23,7 +32,7 @@
 - Build/configuration: `package.json`, `vite.config.ts`, `src/server.ts`
 - Project snapshot: `PROJECT_STATUS.md`
 - Soroban workspace: `Cargo.toml`, `Cargo.lock`, `contracts/**`
-- Contract docs/deployment: `docs/soroban-contracts.md`, `scripts/deploy-testnet.sh`, `.env.example`
+- Contract docs/deployment: `docs/soroban-contracts.md`, `scripts/deploy-testnet.sh`, `.env.example`, `backend/.env.example`
 - Local deployment configuration: `.env` (ignored; contains no secret key)
 - Backend: `backend/**`, `.github/workflows/backend.yml`
 
@@ -52,7 +61,6 @@
 - Add Soroban unit/integration/negative tests for every contract, including token-auth, expiry, and multi-party approval scenarios.
 - Migrate legacy event publication to typed `#[contractevent]` definitions, as recommended by the current SDK.
 - Define the trusted off-chain orchestration transaction that fulfills runtime settlement-opcode commitments atomically with distribution/escrow calls.
-- Configure a funded Testnet deployer/admin and initialize/deploy contracts through the supplied script.
 - Connect the existing frontend to deployed contract IDs and a transaction-signing flow.
 - Create and apply the initial Prisma migration against a clean PostgreSQL instance, then resolve TypeScript/build validation findings.
 - Add BullMQ processors for listener polling, outbox dispatch, retry/DLQ, analytics aggregation, and notification delivery.
@@ -68,12 +76,13 @@
 - Contract events currently use the SDK-compatible compact event API and build with deprecation warnings; typed events remain a follow-up.
 - This source has not undergone an independent security audit and must not custody production assets until audited.
 - Prisma generation requires `DATABASE_URL`; use the documented local Compose connection string or an environment-specific database URL.
-- Testnet deployer identity is ready: `pactos-deployer` resolves to `GDJIXGE27JVFU6QX2I2G52E6BYN44K7LAPJIHSVMJV2OGU6XMDYBPBTP`; Horizon confirmed the account exists with 10,000 native Testnet XLM. No contracts have been deployed.
-- Testnet deployment attempt stopped before transaction submission: the local deployment environment sets `STELLAR_RPC_URL` but omits `STELLAR_NETWORK_PASSPHRASE`; Stellar CLI requires it when an RPC URL is explicitly configured. No PactOS contract IDs were created.
+- Testnet deployer/admin: `pactos-deployer` / `GDJIXGE27JVFU6QX2I2G52E6BYN44K7LAPJIHSVMJV2OGU6XMDYBPBTP`; funded with 10,000 XLM at identity preparation.
+- Stellar Testnet contract IDs: Registry `CCH2PHPRG2E5TQZEBTCSKXALOHME75LEYTKB5GUTDA3TO22TQZ5QSLZD`; Runtime `CDF2BKUBBVWIEFG22EM537GKDDDL2IIVVJ3UXDIJT2YUUHJBZFID6TNF`; Distribution `CCOAGQMRVTQIW3Q33EMEOM7F2MEYUKKZ52YDWJE7IV6ATHUPXGCNGQI4`; Escrow `CBDKPKPGHP5AYFSZP7D3A5366IJKPT2XL26H7QROGLGP6TPNVVDK6RDQ`; Permission `CAFTFBEQQS2BESE64546QCZHY2NANXDTPTXACHWL5GM5DFXXVWLVANZN`; Treasury `CDYZGCP3SENRCJ2Q2XX5EBHGXGP7KSS2JQI446TBMZ45XKB7E3QBNORB`; Audit `CB5BY65ZU4L2Z4J3XRWNDS5BGUODVOYT2EPVCTNDIQXCMBS2C4I22QM4`.
+- Treasury is initialized at `0` bps and verified by its deployed read interface. Distribution has no initializer or safe read-only entry point; Stellar CLI confirmed its deployed interface.
 
 ## Next recommended task
 
-- Add `STELLAR_NETWORK_PASSPHRASE=Test SDF Network ; September 2015` to the local deployment environment, then retry deployment using `pactos-deployer` as both deployer and initial admin.
+- Add contract-level negative/integration coverage before a production deployment; no Testnet deployment or backend-integration blocker remains.
 
 ## Build/test status
 
@@ -85,3 +94,5 @@
 - `npx prisma validate` — passed on 2026-07-17 with the documented local `DATABASE_URL`.
 - `npx prisma generate` — passed on 2026-07-17 (Prisma Client 6.19.3).
 - `npm run build` (backend) — passed on 2026-07-17.
+- Stellar Testnet deployments — passed on 2026-07-18 for all seven contracts; all six applicable initializers passed, including Treasury at `0` bps.
+- Backend Testnet integration — passed on 2026-07-18: healthy RPC connection, seven loaded contract IDs, simulated Treasury read, backend signed-transaction submission reaching `SUCCESS`, decoded event indexing, durable projections, and replay protection.
