@@ -32,6 +32,6 @@ VITE_BACKEND_URL=http://localhost:3001
 VITE_STELLAR_NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
 ```
 
-The existing UI now uses Freighter for a non-custodial login: it requests `POST /v1/auth/challenge`, signs the returned message locally, and sends the signature to `POST /v1/auth/verify`. The browser never receives or stores a secret key.
+The frontend uses Freighter for a non-custodial login: it requests `POST /v1/auth/challenge`, signs the returned message locally, and sends the signature to `POST /v1/auth/verify`. The browser never receives or stores a secret key.
 
-The remaining mock-backed screens are intentional: the current agreement endpoints expose commitments and participant wallet data, not the rich agreement/read-model fields used by the existing cards and detail view. There are also no public activity, analytics, agreement-update, or transaction simulation/submission/status endpoints. Those API contracts must be exposed before the corresponding UI can be connected without changing its design or inventing data.
+All frontend pages (agreements list, agreement details, dashboard statistics/charts/activity, activity logs, templates list) are now connected to the NestJS control plane. The builder Save transaction flow is fully non-custodial: it prepares the transaction XDR, simulates it, prompts Freighter wallet sign, submits the signed XDR via the backend Stellar RPC client, polls the transaction status, and updates the agreement status upon success.

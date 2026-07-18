@@ -1,7 +1,7 @@
 # Project Status
 
-- **Current phase:** Frontend API and wallet-auth integration complete; data-read-model blockers documented
-- **Last updated:** 2026-07-18 17:10 IST
+- **Current phase:** Frontend routes connected to live NestJS backend APIs; non-custodial transaction lifecycle fully integrated; dashboard and activity read models exposed.
+- **Last updated:** 2026-07-18 19:15 IST
 
 ## Completed
 
@@ -28,6 +28,13 @@
 - Added a typed frontend API client with centralized `VITE_BACKEND_URL` configuration, reusable request/error handling, abort-signal support, and typed authentication transport models.
 - Added a user-controlled Freighter wallet flow: request wallet access, require Stellar Testnet, request a backend challenge, sign it in the wallet, verify it through the backend, and persist only the resulting access session client-side.
 - Replaced the sidebar’s mock identity and marketing/dashboard sign-in affordances with the authenticated wallet session while preserving the existing visual layout.
+- Added `DashboardController` and `DashboardModule` for user-scoped or global aggregation of active count, 30d volume, total recipients, execution success rate, and recent agreements/activities.
+- Added `EventsController` to list and decode Soroban contract events (payout, esclock, escrel, conversion, execution) as paginated `ActivityEvent` DTOs.
+- Enhanced `TemplatesController` to map JSON columns to UI presentation models, returning null instead of defaults for missing fields to avoid data fabrication.
+- Updated frontend `api.ts` with new read models and blockchain transaction simulation/submission/status APIs.
+- Connected agreements list (`_app.agreements.tsx`), details (`_app.agreements.$id.tsx`), dashboard (`_app.dashboard.tsx`), activity history (`_app.activity.tsx`), and templates (`_app.templates.tsx`) to the live backend endpoints.
+- Connected the builder page Save transaction flow (`_app.builder.tsx`) to compile transaction XDR -> simulate transaction -> Freighter wallet sign -> submit to Stellar RPC -> poll status -> mark deployed on backend.
+- Resolved type validation errors (e.g. `TIMEOUT_INFINITE`) and verified that the entire backend and frontend projects compile cleanly.
 
 ## Files created or modified
 
@@ -66,11 +73,6 @@
 - Add Soroban unit/integration/negative tests for every contract, including token-auth, expiry, and multi-party approval scenarios.
 - Migrate legacy event publication to typed `#[contractevent]` definitions, as recommended by the current SDK.
 - Define the trusted off-chain orchestration transaction that fulfills runtime settlement-opcode commitments atomically with distribution/escrow calls.
-- Expose a frontend-safe agreement read model that includes the current UI fields (name, description, cadence, budget, recipients, flow blocks, and indexed activity), or return those fields from the existing agreement endpoints. The current API exposes only hashes and participant wallet data, so agreements/dashboard remain mock-backed to preserve the existing UI.
-- Add an agreement update endpoint and a builder input contract. The current create endpoint requires deployed chain IDs, asset addresses, hashes, and participant wallet addresses not collected by the current Builder; no update endpoint exists.
-- Expose public non-custodial transaction simulation, submission, and status endpoints. The backend RPC helpers are service-internal, so the frontend cannot safely build/simulate/submit a contract transaction over HTTP yet.
-- Add activity and analytics read endpoints, plus a template presentation schema (emoji, accent, and flow blocks), before replacing those mock-backed screens.
-- Create and apply the initial Prisma migration against a clean PostgreSQL instance, then resolve TypeScript/build validation findings.
 - Add BullMQ processors for listener polling, outbox dispatch, retry/DLQ, analytics aggregation, and notification delivery.
 - Add backend unit/integration/API tests and Testnet RPC integration tests.
 

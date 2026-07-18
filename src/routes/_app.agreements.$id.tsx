@@ -1,8 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { findAgreement, mockActivity } from "@/lib/mock";
+import { api } from "@/lib/api";
 import { StatusPill } from "@/components/agreements/StatusPill";
 import { ProgressRing } from "@/components/agreements/ProgressRing";
 import { Timeline } from "@/components/agreements/Timeline";
@@ -10,13 +10,15 @@ import { RecipientAvatars } from "@/components/agreements/RecipientAvatars";
 import { ActivityCard } from "@/components/activity/ActivityCard";
 import { ExecutionModal } from "@/components/execution/ExecutionModal";
 import { money } from "@/lib/format";
-import type { Agreement, Block } from "@/lib/types";
+import type { Agreement, Block, ActivityEvent } from "@/lib/types";
 
 export const Route = createFileRoute("/_app/agreements/$id")({
-  loader: ({ params }) => {
-    const a = findAgreement(params.id);
-    if (!a) throw notFound();
-    return a;
+  loader: async ({ params }) => {
+    try {
+      return await api.agreements.get<Agreement>(params.id);
+    } catch {
+      throw notFound();
+    }
   },
   component: AgreementDetail,
   notFoundComponent: () => (
@@ -30,7 +32,31 @@ export const Route = createFileRoute("/_app/agreements/$id")({
 function AgreementDetail() {
   const a = Route.useLoaderData() as Agreement;
   const [open, setOpen] = useState(false);
-  const events = mockActivity.filter((e) => e.agreementId === a.id);
+  const [events, setEvents] = useState<ActivityEvent[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    const fetchEvents = async () => {
+      try {
+        setEventsLoading(true);
+        const res = await api.activity.list<{ data: ActivityEvent[] }>({ agreementId: a.id });
+        if (active) {
+          setEvents(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch events for agreement:", err);
+      } finally {
+        if (active) {
+          setEventsLoading(false);
+        }
+      }
+    };
+    fetchEvents();
+    return () => {
+      active = false;
+    };
+  }, [a.id]);
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <Link to="/agreements" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
@@ -81,7 +107,13 @@ function AgreementDetail() {
           <div>
             <div className="mb-3 text-xs uppercase tracking-wider text-muted-foreground">Recent activity</div>
             <div className="space-y-2.5">
-              {events.length ? events.map((e) => <ActivityCard key={e.id} e={e} />) : (
+              {eventsLoading ? (
+                <div className="rounded-2xl border bg-card p-6 text-center text-sm text-muted-foreground animate-pulse">
+                  Loading activity...
+                </div>
+              ) : events.length ? (
+                events.map((e) => <ActivityCard key={e.id} e={e} />)
+              ) : (
                 <div className="rounded-2xl border bg-card p-6 text-sm text-muted-foreground">No activity yet.</div>
               )}
             </div>

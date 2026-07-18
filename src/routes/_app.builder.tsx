@@ -1,14 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
-import { Play, Save } from "lucide-react";
+import { Play, Save, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BuilderBlock } from "@/components/builder/BuilderBlock";
 import { BlockPalette } from "@/components/builder/BlockPalette";
 import { ExecutionModal } from "@/components/execution/ExecutionModal";
-import { useBuilderStore } from "@/lib/stores";
+import { useBuilderStore, useSessionStore } from "@/lib/stores";
 import { BLOCK_META } from "@/lib/blocks-meta";
+import { api } from "@/lib/api";
+import { config } from "@/lib/config";
+import { signTransaction } from "@stellar/freighter-api";
+import { toast } from "sonner";
 import type { BlockType } from "@/lib/types";
 
 export const Route = createFileRoute("/_app/builder")({
@@ -17,11 +21,98 @@ export const Route = createFileRoute("/_app/builder")({
 
 function BuilderPage() {
   const { name, description, blocks, setName, setDescription, addBlock, removeBlock, moveBlock } = useBuilderStore();
+  const walletAddress = useSessionStore((s) => s.walletAddress);
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const onAdd = (type: BlockType) => {
     const meta = BLOCK_META[type];
     addBlock({ id: `${type}-${Date.now()}`, type, title: meta.label, subtitle: meta.description });
+  };
+
+  const onSave = async () => {
+    if (!walletAddress) {
+      toast.error("Please connect your wallet first.");
+      return;
+    }
+
+    if (blocks.length === 0) {
+      toast.error("Please add at least one block to your agreement.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      toast.loading("Preparing transaction...", { id: "save-flow" });
+
+      // 1. Prepare
+      const prepareRes = await api.agreements.prepare<{
+        agreementId: string;
+        chainAgreementId: string;
+        transactionXdr: string;
+      }>({
+        name,
+        description,
+        blocks,
+        creatorAddress: walletAddress,
+        assetAddress: "CDLZFC3SYJYDZT7K67VZ75HPJGWAMBOEFUR2TIUG2WDJ2WCOYCCKJ6LU", // Native XLM wrap
+      });
+
+      toast.loading("Simulating transaction on-chain...", { id: "save-flow" });
+
+      // 2. Simulate
+      const simRes = await api.blockchain.simulate<any>(prepareRes.transactionXdr);
+      if (simRes.error || (simRes.results && simRes.results.some((r: any) => r.error))) {
+        throw new Error("Simulation failed. The transaction might be invalid.");
+      }
+
+      toast.loading("Signing transaction in wallet...", { id: "save-flow" });
+
+      // 3. Sign
+      let signedXdr: string;
+      try {
+        signedXdr = await signTransaction(prepareRes.transactionXdr, {
+          networkPassphrase: config.stellarNetworkPassphrase,
+          address: walletAddress,
+        });
+      } catch (err: any) {
+        throw new Error(err.message || "User cancelled signing or Freighter error.");
+      }
+
+      toast.loading("Submitting to Stellar network...", { id: "save-flow" });
+
+      // 4. Submit
+      const submitRes = await api.blockchain.submit<{ hash: string; status: string }>(signedXdr);
+      const hash = submitRes.hash;
+
+      toast.loading("Confirming transaction (waiting for ledger)...", { id: "save-flow" });
+
+      // 5. Poll status
+      let status = "PENDING";
+      let attempts = 0;
+      while (status === "PENDING" && attempts < 15) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        const txStatus = await api.blockchain.getTransaction<{ status: string }>(hash);
+        status = txStatus.status;
+        attempts++;
+      }
+
+      if (status !== "SUCCESS") {
+        throw new Error(`Transaction failed to confirm (status: ${status})`);
+      }
+
+      // 6. Update agreement status to DEPLOYED
+      await api.agreements.update(prepareRes.agreementId, { status: "DEPLOYED" });
+
+      toast.success("Agreement saved and registered on-chain!", { id: "save-flow" });
+      navigate({ to: `/agreements/${prepareRes.agreementId}` });
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to save agreement.", { id: "save-flow" });
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -32,7 +123,10 @@ function BuilderPage() {
           <Input value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 border-0 bg-transparent px-0 text-sm text-muted-foreground shadow-none focus-visible:ring-0" />
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="rounded-full"><Save className="h-4 w-4" />Save</Button>
+          <Button onClick={onSave} disabled={saving} variant="outline" className="rounded-full">
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+            Save
+          </Button>
           <Button onClick={() => setOpen(true)} className="rounded-full"><Play className="h-4 w-4" />Test run</Button>
         </div>
       </div>

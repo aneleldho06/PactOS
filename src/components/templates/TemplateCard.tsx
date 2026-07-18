@@ -8,6 +8,10 @@ import { useBuilderStore } from "@/lib/stores";
 export function TemplateCard({ t }: { t: TemplateDef }) {
   const navigate = useNavigate();
   const loadTemplate = useBuilderStore((s) => s.loadTemplate);
+  const accent = t.accent || "var(--chart-1)";
+  const emoji = t.emoji || "📜";
+  const blocks = t.blocks || [];
+
   return (
     <motion.div
       whileHover={{ y: -3 }}
@@ -16,7 +20,7 @@ export function TemplateCard({ t }: { t: TemplateDef }) {
       <div
         className="relative h-32 overflow-hidden"
         style={{
-          background: `linear-gradient(135deg, color-mix(in oklab, ${t.accent} 22%, transparent), color-mix(in oklab, ${t.accent} 6%, transparent))`,
+          background: `linear-gradient(135deg, color-mix(in oklab, ${accent} 22%, transparent), color-mix(in oklab, ${accent} 6%, transparent))`,
         }}
       >
         <div className="absolute right-4 top-4 rounded-full border bg-background/70 px-2.5 py-0.5 text-[11px] font-medium text-foreground backdrop-blur">
@@ -28,7 +32,7 @@ export function TemplateCard({ t }: { t: TemplateDef }) {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
           >
-            {t.emoji}
+            {emoji}
           </motion.div>
         </div>
       </div>
@@ -38,7 +42,10 @@ export function TemplateCard({ t }: { t: TemplateDef }) {
         <Button
           className="mt-5 self-start gap-1.5 rounded-full"
           size="sm"
-          onClick={() => { loadTemplate(t.blocks, t.name); navigate({ to: "/builder" }); }}
+          onClick={() => {
+            loadTemplate(blocks, t.name);
+            navigate({ to: "/builder" });
+          }}
         >
           Use template <ArrowRight className="h-3.5 w-3.5" />
         </Button>

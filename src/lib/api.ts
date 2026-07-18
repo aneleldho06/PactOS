@@ -72,6 +72,10 @@ export const api = {
   agreements: {
     create: <TInput, TResponse>(input: TInput, signal?: AbortSignal) =>
       request<TResponse>("/agreements", { method: "POST", body: input, signal }),
+    prepare: <TInput, TResponse>(input: TInput, signal?: AbortSignal) =>
+      request<TResponse>("/agreements/prepare", { method: "POST", body: input, signal }),
+    update: <TInput, TResponse>(id: string, input: TInput, signal?: AbortSignal) =>
+      request<TResponse>(`/agreements/${id}`, { method: "PATCH", body: input, signal }),
     list: <T>(params: { cursor?: string; status?: string; signal?: AbortSignal } = {}) => {
       const query = new URLSearchParams();
       if (params.cursor) query.set("cursor", params.cursor);
@@ -80,6 +84,32 @@ export const api = {
       return request<T>(`/agreements${suffix}`, { signal: params.signal });
     },
     get: <T>(id: string, signal?: AbortSignal) => request<T>(`/agreements/${id}`, { signal }),
+  },
+  dashboard: {
+    get: <T>(params: { walletAddress?: string; signal?: AbortSignal } = {}) => {
+      const query = new URLSearchParams();
+      if (params.walletAddress) query.set("walletAddress", params.walletAddress);
+      const suffix = query.size ? `?${query}` : "";
+      return request<T>(`/dashboard${suffix}`, { signal: params.signal });
+    },
+  },
+  activity: {
+    list: <T>(params: { cursor?: string; agreementId?: string; walletAddress?: string; signal?: AbortSignal } = {}) => {
+      const query = new URLSearchParams();
+      if (params.cursor) query.set("cursor", params.cursor);
+      if (params.agreementId) query.set("agreementId", params.agreementId);
+      if (params.walletAddress) query.set("walletAddress", params.walletAddress);
+      const suffix = query.size ? `?${query}` : "";
+      return request<T>(`/activity${suffix}`, { signal: params.signal });
+    },
+  },
+  blockchain: {
+    simulate: <TResponse>(transactionXdr: string, signal?: AbortSignal) =>
+      request<TResponse>("/blockchain/simulate", { method: "POST", body: { transactionXdr }, signal }),
+    submit: <TResponse>(transactionXdr: string, signal?: AbortSignal) =>
+      request<TResponse>("/blockchain/submit", { method: "POST", body: { transactionXdr }, signal }),
+    getTransaction: <TResponse>(hash: string, signal?: AbortSignal) =>
+      request<TResponse>(`/blockchain/transaction/${hash}`, { signal }),
   },
   templates: {
     create: <TInput, TResponse>(input: TInput, signal?: AbortSignal) =>
