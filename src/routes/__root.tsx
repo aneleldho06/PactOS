@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { Preloader } from "@/components/brand/Preloader";
+import { useApplyTheme } from "@/lib/stores";
 
 function NotFoundComponent() {
   return (
@@ -93,7 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#0EA5E9" },
+      { name: "theme-color", content: "#050505" },
       { name: "twitter:title", content: "PactOS : The Engine of Programmable Finance on Stellar." },
       {
         name: "twitter:description",
@@ -148,9 +150,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-
+  useApplyTheme();
   return (
     <QueryClientProvider client={queryClient}>
+      <Preloader />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
