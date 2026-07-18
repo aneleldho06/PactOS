@@ -115,3 +115,4 @@
 - Stellar Testnet deployments — passed on 2026-07-18 for all seven contracts; all six applicable initializers passed, including Treasury at `0` bps.
 - Backend Testnet integration — passed on 2026-07-18: healthy RPC connection, seven loaded contract IDs, simulated Treasury read, backend signed-transaction submission reaching `SUCCESS`, decoded event indexing, durable projections, and replay protection.
 - Frontend build — passed on 2026-07-18 after adding the API layer and Freighter wallet authentication integration.
+- Preloader image fix — completed on 2026-07-18; replaced external asset URL reference with direct local import of the uploaded `pactos_intro.jpg` image asset and added `fetchPriority="high"` for LCP optimization.

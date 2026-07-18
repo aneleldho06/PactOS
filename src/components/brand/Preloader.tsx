@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import pactosIntro from "@/assets/pactos_intro.png.asset.json";
+import pactosIntro from "@/assets/pactos_intro.jpg";
 
 const SESSION_KEY = "pactos-preloader-shown";
 
@@ -28,8 +28,9 @@ export function Preloader() {
           aria-hidden
         >
           <motion.img
-            src={pactosIntro.url}
+            src={pactosIntro}
             alt="PactOS"
+            fetchPriority="high"
             initial={{ opacity: 0, scale: 0.96, filter: "blur(8px)" }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
