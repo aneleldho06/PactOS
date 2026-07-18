@@ -7,7 +7,7 @@ function errorMessage(error: unknown) {
   return "The wallet request could not be completed.";
 }
 
-function signatureToBase64(signature: string | { toString(encoding: string): string }) {
+function signatureToBase64(signature: string | { toString(encoding?: string): string }) {
   return typeof signature === "string" ? signature : signature.toString("base64");
 }
 
