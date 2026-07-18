@@ -12,7 +12,7 @@ export function Preloader() {
     if (sessionStorage.getItem(SESSION_KEY)) return;
     setVisible(true);
     sessionStorage.setItem(SESSION_KEY, "1");
-    const t = setTimeout(() => setVisible(false), 1900);
+    const t = setTimeout(() => setVisible(false), 4600);
     return () => clearTimeout(t);
   }, []);
 
