@@ -105,12 +105,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:image",
         content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/3591f605-5061-4d70-8ae8-ac825006b34b/id-preview-9a690a5b--fe454eb3-eabf-4a17-8225-2a269000558e.lovable.app-1784294404659.png",
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/uICpw9r0gkU9gsnE2suAriHU4jE2/social-images/social-1784379191363-yeahhhhhh_2026-07-18_at_6.22.59_PM.webp",
       },
       {
         name: "twitter:image",
         content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/3591f605-5061-4d70-8ae8-ac825006b34b/id-preview-9a690a5b--fe454eb3-eabf-4a17-8225-2a269000558e.lovable.app-1784294404659.png",
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/uICpw9r0gkU9gsnE2suAriHU4jE2/social-images/social-1784379191363-yeahhhhhh_2026-07-18_at_6.22.59_PM.webp",
       },
     ],
     links: [
@@ -118,7 +118,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
