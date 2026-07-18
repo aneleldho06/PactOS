@@ -4,6 +4,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./ThemeToggle";
+import { WalletButton } from "./WalletButton";
 
 export function TopBar() {
   return (
@@ -18,11 +19,15 @@ export function TopBar() {
       </div>
       <div className="ml-auto flex items-center gap-1">
         <Button asChild size="sm" className="gap-1.5 rounded-full">
-          <Link to="/builder"><Plus className="h-4 w-4" />New Agreement</Link>
+          <Link to="/builder">
+            <Plus className="h-4 w-4" />
+            New Agreement
+          </Link>
         </Button>
         <Button variant="ghost" size="icon" aria-label="Notifications">
           <Bell className="h-4 w-4" />
         </Button>
+        <WalletButton variant="ghost" />
         <ThemeToggle />
       </div>
     </header>

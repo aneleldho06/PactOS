@@ -1,13 +1,26 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, FileText, Sparkles, LibraryBig, Activity, BarChart3, Settings,
+  LayoutDashboard,
+  FileText,
+  Sparkles,
+  LibraryBig,
+  Activity,
+  BarChart3,
+  Settings,
 } from "lucide-react";
 import {
-  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
-  SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Logo } from "@/components/brand/Logo";
-import { mockUser } from "@/lib/mock";
+import { useSessionStore } from "@/lib/stores";
 
 const nav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -21,6 +34,11 @@ const nav = [
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const walletAddress = useSessionStore((state) => state.walletAddress);
+  const label = walletAddress
+    ? `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)}`
+    : "Wallet not connected";
+  const initials = walletAddress ? walletAddress.slice(1, 3) : "—";
   return (
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="border-b px-3 py-4">
@@ -52,11 +70,11 @@ export function AppSidebar() {
       <SidebarFooter className="border-t p-3">
         <div className="flex items-center gap-3">
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-foreground text-background text-xs font-semibold">
-            {mockUser.initials}
+            {initials}
           </div>
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-            <div className="truncate text-sm font-medium">{mockUser.name}</div>
-            <div className="truncate text-xs text-muted-foreground">{mockUser.email}</div>
+            <div className="truncate text-sm font-medium">{label}</div>
+            <div className="truncate text-xs text-muted-foreground">Stellar Testnet</div>
           </div>
         </div>
       </SidebarFooter>

@@ -22,3 +22,16 @@ The backend reads `STELLAR_RPC_URL` and all seven `PACTOS_*_CONTRACT_ID` values 
 `getEvents` uses two contract filters because Stellar Testnet permits at most five contract IDs per filter. It stores the RPC pagination cursor after each successful page and deduplicates with the RPC event ID before writing the `ContractEvent` and `OutboxEvent` projections.
 
 Validated on 2026-07-18: healthy Testnet RPC, seven loaded IDs, Treasury read simulation, signed transaction submission reaching `SUCCESS`, decoded `feecfg = 0` events, durable PostgreSQL projections, and an immediate replay poll with no duplicate rows.
+
+## Frontend connection
+
+Set these public frontend variables before running the TanStack Start app:
+
+```dotenv
+VITE_BACKEND_URL=http://localhost:3001
+VITE_STELLAR_NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
+```
+
+The existing UI now uses Freighter for a non-custodial login: it requests `POST /v1/auth/challenge`, signs the returned message locally, and sends the signature to `POST /v1/auth/verify`. The browser never receives or stores a secret key.
+
+The remaining mock-backed screens are intentional: the current agreement endpoints expose commitments and participant wallet data, not the rich agreement/read-model fields used by the existing cards and detail view. There are also no public activity, analytics, agreement-update, or transaction simulation/submission/status endpoints. Those API contracts must be exposed before the corresponding UI can be connected without changing its design or inventing data.

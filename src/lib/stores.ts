@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { useEffect } from "react";
 import type { Block } from "./types";
 import { familyBlocks } from "./mock";
+import type { AuthSession } from "./api";
 
 interface UIState {
   theme: "light" | "dark";
@@ -18,6 +19,32 @@ export const useUIStore = create<UIState>()(
       setTheme: (t) => set({ theme: t }),
     }),
     { name: "flowledger-ui" },
+  ),
+);
+
+interface SessionState {
+  walletAddress: string | null;
+  userId: string | null;
+  accessToken: string | null;
+  setSession: (session: AuthSession) => void;
+  clearSession: () => void;
+}
+
+export const useSessionStore = create<SessionState>()(
+  persist(
+    (set) => ({
+      walletAddress: null,
+      userId: null,
+      accessToken: null,
+      setSession: (session) =>
+        set({
+          walletAddress: session.user.walletAddress,
+          userId: session.user.id,
+          accessToken: session.accessToken,
+        }),
+      clearSession: () => set({ walletAddress: null, userId: null, accessToken: null }),
+    }),
+    { name: "pactos-session" },
   ),
 );
 

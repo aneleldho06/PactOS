@@ -1,7 +1,7 @@
 # Project Status
 
-- **Current phase:** Stellar Testnet deployment and backend integration validated
-- **Last updated:** 2026-07-18 16:51 IST
+- **Current phase:** Frontend API and wallet-auth integration complete; data-read-model blockers documented
+- **Last updated:** 2026-07-18 17:10 IST
 
 ## Completed
 
@@ -25,6 +25,9 @@
 - Validated non-custodial signed-transaction submission through the backend wrapper. Transaction `f477613f060895144aacc8a96cb1b4a38777e2c5c7bdbb4c2c32096d9b149494` reached `SUCCESS` on Testnet.
 - Corrected backend event pagination for the Testnet RPC’s five-contract-per-filter limit and `pagination.cursor` request shape; decoded Treasury `feecfg` events now persist as `"feecfg"` / `0`.
 - Validated event projections in PostgreSQL: Testnet events created durable inbox receipts, contract-event rows, and outbox rows; an immediate replay poll produced no duplicates.
+- Added a typed frontend API client with centralized `VITE_BACKEND_URL` configuration, reusable request/error handling, abort-signal support, and typed authentication transport models.
+- Added a user-controlled Freighter wallet flow: request wallet access, require Stellar Testnet, request a backend challenge, sign it in the wallet, verify it through the backend, and persist only the resulting access session client-side.
+- Replaced the sidebar’s mock identity and marketing/dashboard sign-in affordances with the authenticated wallet session while preserving the existing visual layout.
 
 ## Files created or modified
 
@@ -47,12 +50,14 @@
 - **ADR-007:** Use standard Soroban token contracts for asset settlement; transfers are atomic with the invoking transaction.
 - **ADR-008:** Backend is a non-custodial control plane: it verifies wallet login signatures, simulates/submits wallet-signed XDR, and indexes chain facts without financial decision authority.
 - **ADR-009:** Soroban events are indexed at-least-once using durable cursor checkpoints and inbox receipts; projected effects are deduplicated by transaction/event coordinates.
+- **ADR-010:** The browser is non-custodial. Freighter owns key access and signatures; the frontend sends only the resulting signature to the existing backend authentication endpoint.
 
 ## Public interfaces
 
 - Domain contracts in `src/lib/types.ts`: `Agreement`, `Recipient`, `Block`, `ActivityEvent`, `TemplateDef`.
 - Builder store in `src/lib/stores.ts`: block add/remove/move/update, template load, and reset operations.
-- No network APIs, smart-contract interfaces, or external events are implemented.
+- Frontend API client: `src/lib/api.ts`, configured by `VITE_BACKEND_URL`; it exposes typed auth/health transport and generic, cancelable helpers for the existing agreement, template, and notification endpoints.
+- Frontend wallet auth: `src/lib/wallet-auth.ts` and `useSessionStore` use Freighter to sign the backend-issued login challenge on Stellar Testnet. No secret key is created, stored, or transmitted by the app.
 - Soroban contract interfaces are documented in `docs/soroban-contracts.md`; public methods include lifecycle management, ADL program installation/execution, settlement, escrow, approvals, fees, and audit receipts.
 - Backend endpoints: `POST /v1/auth/challenge`, `POST /v1/auth/verify`, `GET|POST /v1/agreements`, `GET /v1/agreements/:id`, `GET|POST /v1/templates`, `GET|PATCH /v1/notifications/:id`, `GET /v1/health`, and Swagger at `/docs`.
 
@@ -61,7 +66,10 @@
 - Add Soroban unit/integration/negative tests for every contract, including token-auth, expiry, and multi-party approval scenarios.
 - Migrate legacy event publication to typed `#[contractevent]` definitions, as recommended by the current SDK.
 - Define the trusted off-chain orchestration transaction that fulfills runtime settlement-opcode commitments atomically with distribution/escrow calls.
-- Connect the existing frontend to deployed contract IDs and a transaction-signing flow.
+- Expose a frontend-safe agreement read model that includes the current UI fields (name, description, cadence, budget, recipients, flow blocks, and indexed activity), or return those fields from the existing agreement endpoints. The current API exposes only hashes and participant wallet data, so agreements/dashboard remain mock-backed to preserve the existing UI.
+- Add an agreement update endpoint and a builder input contract. The current create endpoint requires deployed chain IDs, asset addresses, hashes, and participant wallet addresses not collected by the current Builder; no update endpoint exists.
+- Expose public non-custodial transaction simulation, submission, and status endpoints. The backend RPC helpers are service-internal, so the frontend cannot safely build/simulate/submit a contract transaction over HTTP yet.
+- Add activity and analytics read endpoints, plus a template presentation schema (emoji, accent, and flow blocks), before replacing those mock-backed screens.
 - Create and apply the initial Prisma migration against a clean PostgreSQL instance, then resolve TypeScript/build validation findings.
 - Add BullMQ processors for listener polling, outbox dispatch, retry/DLQ, analytics aggregation, and notification delivery.
 - Add backend unit/integration/API tests and Testnet RPC integration tests.
@@ -74,6 +82,8 @@
 - No test script is configured.
 - The official Stellar `smart-contracts` skill was installed from `stellar/stellar-dev-skill` after the initial implementation; apply it to the next contract review/refinement task.
 - Contract events currently use the SDK-compatible compact event API and build with deprecation warnings; typed events remain a follow-up.
+- The frontend intentionally retains mock data for Agreements, Dashboard, Activity, Templates, and Analytics because the existing backend endpoints do not provide the data shapes those unchanged screens require. This avoids inventing or degrading product data while backend read models are incomplete.
+- There is no frontend `README.md` in this repository. Frontend environment and integration instructions are documented in `backend/README.md` alongside the API configuration.
 - This source has not undergone an independent security audit and must not custody production assets until audited.
 - Prisma generation requires `DATABASE_URL`; use the documented local Compose connection string or an environment-specific database URL.
 - Testnet deployer/admin: `pactos-deployer` / `GDJIXGE27JVFU6QX2I2G52E6BYN44K7LAPJIHSVMJV2OGU6XMDYBPBTP`; funded with 10,000 XLM at identity preparation.
@@ -96,3 +106,4 @@
 - `npm run build` (backend) — passed on 2026-07-17.
 - Stellar Testnet deployments — passed on 2026-07-18 for all seven contracts; all six applicable initializers passed, including Treasury at `0` bps.
 - Backend Testnet integration — passed on 2026-07-18: healthy RPC connection, seven loaded contract IDs, simulated Treasury read, backend signed-transaction submission reaching `SUCCESS`, decoded event indexing, durable projections, and replay protection.
+- Frontend build — passed on 2026-07-18 after adding the API layer and Freighter wallet authentication integration.
