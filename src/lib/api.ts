@@ -55,8 +55,6 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
 export const api = {
   request,
-  health: (signal?: AbortSignal) =>
-    request<{ status: string; service: string; time: string }>("/health", { signal }),
   auth: {
     challenge: (walletAddress: string, signal?: AbortSignal) =>
       request<AuthChallenge>("/auth/challenge", {
@@ -70,6 +68,7 @@ export const api = {
     ) => request<AuthSession>("/auth/verify", { method: "POST", body: input, signal }),
   },
   agreements: {
+    /** @deprecated Use prepare instead */
     create: <TInput, TResponse>(input: TInput, signal?: AbortSignal) =>
       request<TResponse>("/agreements", { method: "POST", body: input, signal }),
     prepare: <TInput, TResponse>(input: TInput, signal?: AbortSignal) =>
@@ -112,17 +111,12 @@ export const api = {
       request<TResponse>(`/blockchain/transaction/${hash}`, { signal }),
   },
   templates: {
+    /** @deprecated Templates should typically not be created dynamically through the client API. */
     create: <TInput, TResponse>(input: TInput, signal?: AbortSignal) =>
       request<TResponse>("/templates", { method: "POST", body: input, signal }),
     list: <T>(category?: string, signal?: AbortSignal) =>
       request<T>(`/templates${category ? `?category=${encodeURIComponent(category)}` : ""}`, {
         signal,
       }),
-  },
-  notifications: {
-    list: <T>(userId: string, accessToken: string, signal?: AbortSignal) =>
-      request<T>(`/notifications/${userId}`, { accessToken, signal }),
-    markRead: <T>(id: string, accessToken: string, signal?: AbortSignal) =>
-      request<T>(`/notifications/${id}/read`, { method: "PATCH", accessToken, signal }),
   },
 };

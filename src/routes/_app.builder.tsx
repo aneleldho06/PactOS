@@ -56,7 +56,6 @@ function BuilderPage() {
         description,
         blocks,
         creatorAddress: walletAddress,
-        assetAddress: "CDLZFC3SYJYDZT7K67VZ75HPJGWAMBOEFUR2TIUG2WDJ2WCOYCCKJ6LU", // Native XLM wrap
       });
 
       toast.loading("Simulating transaction on-chain...", { id: "save-flow" });

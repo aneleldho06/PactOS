@@ -25,7 +25,7 @@ const prepareSchema = z.object({
   description: z.string().optional().default(''),
   blocks: z.array(z.any()).min(1),
   creatorAddress: z.string().min(1),
-  assetAddress: z.string().min(1),
+  assetAddress: z.string().min(1).optional(),
   cadence: z.string().optional(),
   monthlyBudget: z.number().optional(),
   currency: z.string().optional(),
@@ -44,7 +44,10 @@ export class AgreementsController {
   constructor(private readonly agreements: AgreementsService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Directly create an agreement record (legacy support)' })
+  @ApiOperation({ summary: 'Directly create an agreement record (legacy support)', deprecated: true })
+  /**
+   * @deprecated Use prepare flow instead
+   */
   create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
     return this.agreements.create(body);
   }

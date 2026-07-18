@@ -13,6 +13,9 @@ export class AgreementsService {
     private readonly blockchain: BlockchainService,
   ) {}
 
+  /**
+   * @deprecated Use prepare instead
+   */
   async create(input: any) {
     const { participants, ...agreement } = input;
     return this.prisma.$transaction(async tx => {
@@ -32,13 +35,14 @@ export class AgreementsService {
     description: string;
     blocks: any[];
     creatorAddress: string;
-    assetAddress: string;
+    assetAddress?: string;
     cadence?: string;
     monthlyBudget?: number;
     currency?: string;
   }) {
     const creatorAddress = input.creatorAddress;
-    const assetAddress = input.assetAddress;
+    const defaultAsset = this.config.get<string>('STELLAR_DEFAULT_ASSET_ADDRESS', 'CDLZFC3SYJYDZT7K67VZ75HPJGWAMBOEFUR2TIUG2WDJ2WCOYCCKJ6LU');
+    const assetAddress = input.assetAddress || defaultAsset;
 
     // Find or create creator wallet & user
     let wallet = await this.prisma.wallet.findUnique({

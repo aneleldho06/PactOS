@@ -64,7 +64,10 @@ export class TemplatesController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create a new template' })
+  @ApiOperation({ summary: 'Create a new template', deprecated: true })
+  /**
+   * @deprecated Templates should typically not be created dynamically through the client API. Use database seeds.
+   */
   create(@Body(new ZodValidationPipe(templateSchema)) body: z.infer<typeof templateSchema>) {
     return this.prisma.template.create({ data: body });
   }

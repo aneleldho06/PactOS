@@ -1,7 +1,7 @@
 # Project Status
 
 - **Current phase:** Frontend routes connected to live NestJS backend APIs; non-custodial transaction lifecycle fully integrated; dashboard and activity read models exposed.
-- **Last updated:** 2026-07-18 19:15 IST
+- **Last updated:** 2026-07-18 19:55 IST
 
 ## Completed
 
@@ -33,8 +33,13 @@
 - Enhanced `TemplatesController` to map JSON columns to UI presentation models, returning null instead of defaults for missing fields to avoid data fabrication.
 - Updated frontend `api.ts` with new read models and blockchain transaction simulation/submission/status APIs.
 - Connected agreements list (`_app.agreements.tsx`), details (`_app.agreements.$id.tsx`), dashboard (`_app.dashboard.tsx`), activity history (`_app.activity.tsx`), and templates (`_app.templates.tsx`) to the live backend endpoints.
-- Connected the builder page Save transaction flow (`_app.builder.tsx`) to compile transaction XDR -> simulate transaction -> Freighter wallet sign -> submit to Stellar RPC -> poll status -> mark deployed on backend.
 - Resolved type validation errors (e.g. `TIMEOUT_INFINITE`) and verified that the entire backend and frontend projects compile cleanly.
+- Performed a full repository audit and refactoring milestone:
+  - Deprecated legacy direct-creation endpoints (`POST /agreements` and `POST /templates`) in backend controllers and frontend API client to emphasize the canonical compile-and-prepare flow.
+  - Disabled the unused `NotificationsModule` in the `AppModule` imports list to avoid active route exposure, while preserving the module code for future UI integrations.
+  - Extracted the duplicate event mapping logic from `DashboardController` and `EventsController` into a centralized `mapContractEventToActivityDto` helper in `events.mapper.ts`.
+  - Moved the Stellar native wrap asset address (`CDLZFC3SYJYDZT7K67VZ75HPJGWAMBOEFUR2TIUG2WDJ2WCOYCCKJ6LU`) from the frontend builder code to the backend environment variables (`STELLAR_DEFAULT_ASSET_ADDRESS`), resolved dynamically.
+  - Added Swagger decorators to `AuthController` and `HealthController` for API specification completeness.
 
 ## Files created or modified
 
@@ -78,13 +83,14 @@
 
 ## Implementation notes and known debt
 
-- The Builder’s **Save** button is presently visual only; **Test run** opens a local modal.
-- Mock data drives the current UI, so changes do not persist beyond current client state (except theme preference).
 - Build reports a non-blocking Vite notice: `vite-tsconfig-paths` can be replaced by Vite’s native `resolve.tsconfigPaths` option.
 - No test script is configured.
 - The official Stellar `smart-contracts` skill was installed from `stellar/stellar-dev-skill` after the initial implementation; apply it to the next contract review/refinement task.
 - Contract events currently use the SDK-compatible compact event API and build with deprecation warnings; typed events remain a follow-up.
-- The frontend intentionally retains mock data for Agreements, Dashboard, Activity, Templates, and Analytics because the existing backend endpoints do not provide the data shapes those unchanged screens require. This avoids inventing or degrading product data while backend read models are incomplete.
+- The Analytics page intentionally retains mock data because backend read models for analytics are not yet implemented.
+- Unused endpoints (POST /agreements and POST /templates) have been deprecated to align with prepare flow architecture while preserving compatibility.
+- NotificationsModule is disabled from application imports pending UI notification display implementation.
+- Stellar wrap token asset address is moved to backend environment configuration to keep business logic agnostic of blockchain-specific constants.
 - There is no frontend `README.md` in this repository. Frontend environment and integration instructions are documented in `backend/README.md` alongside the API configuration.
 - This source has not undergone an independent security audit and must not custody production assets until audited.
 - Prisma generation requires `DATABASE_URL`; use the documented local Compose connection string or an environment-specific database URL.
