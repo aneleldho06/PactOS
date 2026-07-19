@@ -13,7 +13,7 @@ export function AgreementCard({ a }: { a: Agreement }) {
     <motion.div
       whileHover={{ y: -3 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      className="group relative overflow-hidden rounded-2xl border bg-card p-5 shadow-elegant hover:shadow-glow"
+      className="group relative overflow-hidden rounded-2xl border-[3px] border-foreground bg-card p-5 shadow-elegant hover:shadow-glow"
     >
       <Link to="/agreements/$id" params={{ id: a.id }} className="absolute inset-0" aria-label={a.name} />
       <div className="flex items-start justify-between gap-3">

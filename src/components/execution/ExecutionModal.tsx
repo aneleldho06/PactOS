@@ -49,7 +49,7 @@ export function ExecutionModal({
         className="max-w-4xl border-0 bg-transparent p-0 shadow-none [&>button:last-child]:hidden"
       >
         <DialogTitle className="sr-only">Executing agreement</DialogTitle>
-        <div className="relative overflow-hidden rounded-3xl border bg-card shadow-elegant">
+        <div className="relative overflow-hidden rounded-3xl border-[3px] border-foreground bg-card shadow-elegant">
           <button
             onClick={() => onOpenChange(false)}
             className="absolute right-4 top-4 z-10 grid h-8 w-8 place-items-center rounded-full bg-background/70 text-muted-foreground backdrop-blur hover:text-foreground"
@@ -67,7 +67,7 @@ export function ExecutionModal({
               <div className="text-xs text-muted-foreground">Powered by Soroban</div>
             </div>
 
-            <div className="mt-6 rounded-2xl border bg-background/40 p-4 backdrop-blur">
+            <div className="mt-6 rounded-2xl border-[3px] border-foreground bg-background/40 p-4 backdrop-blur">
               <svg viewBox="0 0 600 480" className="w-full h-[380px] sm:h-[440px]">
                 {EDGES.map(([a, b], i) => {
                   const A = nodeById(a); const B = nodeById(b);
@@ -117,7 +117,7 @@ export function ExecutionModal({
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-6 grid gap-4 rounded-2xl border bg-background/70 p-5 backdrop-blur sm:grid-cols-[auto_1fr_auto]"
+                  className="mt-6 grid gap-4 rounded-2xl border-[3px] border-foreground bg-background/70 p-5 backdrop-blur sm:grid-cols-[auto_1fr_auto]"
                 >
                   <div className="grid h-12 w-12 place-items-center rounded-full bg-success/15 text-success">
                     <CheckCircle2 className="h-6 w-6" />

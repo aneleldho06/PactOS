@@ -15,7 +15,7 @@ export function TemplateCard({ t }: { t: TemplateDef }) {
   return (
     <motion.div
       whileHover={{ y: -3 }}
-      className="group flex flex-col overflow-hidden rounded-2xl border bg-card shadow-elegant hover:shadow-glow"
+      className="group flex flex-col overflow-hidden rounded-2xl border-[3px] border-foreground bg-card shadow-elegant hover:shadow-glow"
     >
       <div
         className="relative h-32 overflow-hidden"
@@ -23,7 +23,7 @@ export function TemplateCard({ t }: { t: TemplateDef }) {
           background: `linear-gradient(135deg, color-mix(in oklab, ${accent} 22%, transparent), color-mix(in oklab, ${accent} 6%, transparent))`,
         }}
       >
-        <div className="absolute right-4 top-4 rounded-full border bg-background/70 px-2.5 py-0.5 text-[11px] font-medium text-foreground backdrop-blur">
+        <div className="absolute right-4 top-4 rounded-full border-[3px] border-foreground bg-background/70 px-2.5 py-0.5 text-[11px] font-medium text-foreground backdrop-blur">
           {t.category}
         </div>
         <div className="absolute inset-0 grid place-items-center text-5xl">

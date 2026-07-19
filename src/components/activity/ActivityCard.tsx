@@ -20,7 +20,7 @@ export function ActivityCard({ e }: { e: ActivityEvent }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.3 }}
-      className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 rounded-2xl border bg-card px-4 py-3 shadow-elegant hover:shadow-glow transition"
+      className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 rounded-2xl border-[3px] border-foreground bg-card px-4 py-3 shadow-elegant hover:shadow-glow transition"
     >
       <div className={`grid h-9 w-9 place-items-center rounded-xl ${cfg.color}`}>
         <cfg.Icon className="h-4 w-4" />

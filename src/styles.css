@@ -19,13 +19,13 @@
  */
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 6px;
+  --radius-3xl: 8px;
+  --radius-4xl: 10px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -70,7 +70,7 @@
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 0.125rem;
   /* PactOS palette — light (kept minimal; app defaults to dark) */
   --background: oklch(0.985 0.003 150);
   --foreground: oklch(0.15 0.01 150);
@@ -109,8 +109,8 @@
   --sidebar-accent-foreground: oklch(0.15 0.01 150);
   --sidebar-border: oklch(0.9 0.005 150);
   --sidebar-ring: oklch(0.86 0.24 130);
-  --shadow-elegant: 0 1px 2px 0 rgb(0 0 0 / 0.06), 0 8px 24px -8px rgb(0 0 0 / 0.1);
-  --shadow-glow: 0 0 0 1px rgb(124 255 0 / 0.15), 0 12px 48px -12px rgb(124 255 0 / 0.35);
+  --shadow-elegant: 4px 4px 0 0 rgb(0 0 0);
+  --shadow-glow: 6px 6px 0 0 rgb(124 255 0);
   --gradient-hero: radial-gradient(1200px 600px at 10% -10%, rgb(124 255 0 / 0.15), transparent 60%),
                    radial-gradient(900px 500px at 90% 10%, rgb(124 255 0 / 0.08), transparent 60%);
 }
@@ -154,8 +154,8 @@
   --sidebar-accent-foreground: oklch(0.9 0.28 130);
   --sidebar-border: oklch(0.22 0 0);
   --sidebar-ring: oklch(0.9 0.28 130);
-  --shadow-elegant: 0 1px 2px 0 rgb(0 0 0 / 0.6), 0 12px 32px -12px rgb(0 0 0 / 0.7);
-  --shadow-glow: 0 0 0 1px rgb(124 255 0 / 0.2), 0 0 24px rgb(124 255 0 / 0.18), 0 12px 48px -12px rgb(124 255 0 / 0.35);
+  --shadow-elegant: 4px 4px 0 0 rgb(124 255 0 / 0.9);
+  --shadow-glow: 6px 6px 0 0 rgb(124 255 0);
   --gradient-hero: radial-gradient(1200px 600px at 10% -10%, rgb(124 255 0 / 0.14), transparent 60%),
                    radial-gradient(900px 500px at 90% 10%, rgb(124 255 0 / 0.08), transparent 60%);
 }
@@ -173,8 +173,36 @@
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    font-weight: 800;
   }
+}
+
+@utility brutal-border {
+  border-width: 3px;
+  border-color: var(--color-border);
+}
+
+@utility brutal-shadow {
+  box-shadow: 4px 4px 0 0 var(--color-border);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+@utility brutal-shadow-primary {
+  box-shadow: 5px 5px 0 0 var(--color-primary);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+@utility brutal-lift {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.brutal-lift:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--color-primary);
+}
+.brutal-lift:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 0 var(--color-primary);
 }
 
 @utility font-display {

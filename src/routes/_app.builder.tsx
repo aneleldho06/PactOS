@@ -47,16 +47,16 @@ function BuilderPage() {
       toast.loading("Preparing transaction...", { id: "save-flow" });
 
       // 1. Prepare
-      const prepareRes = await api.agreements.prepare<{
-        agreementId: string;
-        chainAgreementId: string;
-        transactionXdr: string;
-      }>({
+      const prepareRes = (await api.agreements.prepare({
         name,
         description,
         blocks,
         creatorAddress: walletAddress,
-      });
+      })) as {
+        agreementId: string;
+        chainAgreementId: string;
+        transactionXdr: string;
+      };
 
       toast.loading("Simulating transaction on-chain...", { id: "save-flow" });
 
@@ -71,10 +71,11 @@ function BuilderPage() {
       // 3. Sign
       let signedXdr: string;
       try {
-        signedXdr = await signTransaction(prepareRes.transactionXdr, {
+        const signRes: any = await signTransaction(prepareRes.transactionXdr, {
           networkPassphrase: config.stellarNetworkPassphrase,
           address: walletAddress,
         });
+        signedXdr = typeof signRes === "string" ? signRes : signRes.signedTxXdr;
       } catch (err: any) {
         throw new Error(err.message || "User cancelled signing or Freighter error.");
       }
@@ -132,7 +133,7 @@ function BuilderPage() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
         <BlockPalette onAdd={onAdd} />
-        <div className="min-h-[500px] rounded-2xl border bg-card/40 p-6 dot-grid">
+        <div className="min-h-[500px] rounded-2xl border-[3px] border-foreground bg-card/40 p-6 dot-grid">
           <div className="mx-auto flex max-w-md flex-col items-center gap-3">
             <AnimatePresence>
               {blocks.map((bl, i) => (

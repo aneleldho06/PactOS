@@ -76,7 +76,7 @@ function AgreementDetail() {
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-        <div className="rounded-2xl border bg-card p-6 shadow-elegant">
+        <div className="rounded-2xl border-[3px] border-foreground bg-card p-6 shadow-elegant">
           <div className="text-xs uppercase tracking-wider text-muted-foreground">Flow</div>
           <Timeline items={a.blocks.map((bl: Block, i: number) => ({
             id: bl.id,
@@ -86,7 +86,7 @@ function AgreementDetail() {
           }))} />
         </div>
         <div className="space-y-6">
-          <div className="rounded-2xl border bg-card p-6 shadow-elegant">
+          <div className="rounded-2xl border-[3px] border-foreground bg-card p-6 shadow-elegant">
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-xs uppercase tracking-wider text-muted-foreground">Budget</div>
@@ -108,13 +108,13 @@ function AgreementDetail() {
             <div className="mb-3 text-xs uppercase tracking-wider text-muted-foreground">Recent activity</div>
             <div className="space-y-2.5">
               {eventsLoading ? (
-                <div className="rounded-2xl border bg-card p-6 text-center text-sm text-muted-foreground animate-pulse">
+                <div className="rounded-2xl border-[3px] border-foreground bg-card p-6 text-center text-sm text-muted-foreground animate-pulse">
                   Loading activity...
                 </div>
               ) : events.length ? (
                 events.map((e) => <ActivityCard key={e.id} e={e} />)
               ) : (
-                <div className="rounded-2xl border bg-card p-6 text-sm text-muted-foreground">No activity yet.</div>
+                <div className="rounded-2xl border-[3px] border-foreground bg-card p-6 text-sm text-muted-foreground">No activity yet.</div>
               )}
             </div>
           </div>

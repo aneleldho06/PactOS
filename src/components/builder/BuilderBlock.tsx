@@ -23,7 +23,7 @@ export function BuilderBlock({ block, onRemove, onMoveUp, onMoveDown, first, las
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ type: "spring", stiffness: 260, damping: 22 }}
-      className="group relative w-full max-w-md rounded-2xl border bg-card p-4 shadow-elegant hover:shadow-glow"
+      className="group relative w-full max-w-md rounded-2xl border-[3px] border-foreground bg-card p-4 shadow-elegant hover:shadow-glow"
     >
       <div className="flex items-start gap-3">
         <div

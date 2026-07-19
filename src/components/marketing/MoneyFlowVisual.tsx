@@ -42,7 +42,7 @@ export function MoneyFlowVisual() {
   return (
     <div className="relative w-full">
       <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl bg-hero-gradient blur-2xl opacity-70" />
-      <div className="rounded-3xl border bg-card/60 p-6 shadow-elegant backdrop-blur">
+      <div className="rounded-3xl border-[3px] border-foreground bg-card/60 p-6 shadow-elegant backdrop-blur">
         <svg viewBox="0 0 560 460" className="w-full h-[420px]">
           <defs>
             <linearGradient id="pulse" x1="0" x2="1">

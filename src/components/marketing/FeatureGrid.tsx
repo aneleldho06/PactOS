@@ -26,7 +26,7 @@ export function FeatureGrid() {
           viewport={{ once: true, margin: "-40px" }}
           transition={{ delay: (i % 4) * 0.05, duration: 0.35 }}
           whileHover={{ y: -3 }}
-          className="group rounded-2xl border bg-card p-5 shadow-elegant hover:shadow-glow"
+          className="group rounded-2xl border-[3px] border-foreground bg-card p-5 shadow-elegant hover:shadow-glow"
         >
           <div className="grid h-9 w-9 place-items-center rounded-xl bg-muted text-muted-foreground transition group-hover:bg-primary/10 group-hover:text-primary">
             <f.icon className="h-4 w-4" />

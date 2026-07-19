@@ -39,7 +39,7 @@ export function Timeline({ items }: { items: TimelineItem[] }) {
             >
               <Icon className="h-4 w-4" />
             </span>
-            <div className="rounded-xl border bg-card px-4 py-3 shadow-elegant">
+            <div className="rounded-xl border-[3px] border-foreground bg-card px-4 py-3 shadow-elegant">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="truncate text-sm font-semibold">{it.title}</div>

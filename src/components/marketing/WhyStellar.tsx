@@ -10,7 +10,7 @@ const steps = [
 
 export function WhyStellar() {
   return (
-    <div className="rounded-3xl border bg-card p-6 sm:p-10 shadow-elegant">
+    <div className="rounded-3xl border-[3px] border-foreground bg-card p-6 sm:p-10 shadow-elegant">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_1.4fr]">
         <div>
           <div className="text-xs font-medium uppercase tracking-wider text-primary">Why Stellar</div>
@@ -30,7 +30,7 @@ export function WhyStellar() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.4 }}
-                className="relative overflow-hidden rounded-2xl border bg-background/60 p-5"
+                className="relative overflow-hidden rounded-2xl border-[3px] border-foreground bg-background/60 p-5"
               >
                 <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
                   <s.icon className="h-4 w-4" />

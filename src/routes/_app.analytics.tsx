@@ -25,7 +25,7 @@ function AnalyticsPage() {
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-        <div className="rounded-2xl border bg-card p-6 shadow-elegant">
+        <div className="rounded-2xl border-[3px] border-foreground bg-card p-6 shadow-elegant">
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Monthly volume</div>
           <div className="mt-4 h-72">
             <ResponsiveContainer width="100%" height="100%">
@@ -44,7 +44,7 @@ function AnalyticsPage() {
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="rounded-2xl border bg-card p-6 shadow-elegant">
+        <div className="rounded-2xl border-[3px] border-foreground bg-card p-6 shadow-elegant">
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Currency mix</div>
           <div className="mt-4 h-72">
             <ResponsiveContainer width="100%" height="100%">
@@ -59,7 +59,7 @@ function AnalyticsPage() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl border bg-card p-6 shadow-elegant">
+      <div className="mt-6 rounded-2xl border-[3px] border-foreground bg-card p-6 shadow-elegant">
         <div className="text-xs uppercase tracking-widest text-muted-foreground">Execution success</div>
         <div className="mt-4 h-56">
           <ResponsiveContainer width="100%" height="100%">

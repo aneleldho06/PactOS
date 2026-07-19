@@ -133,7 +133,7 @@ function DashboardPage() {
             <Link to="/agreements" className="text-sm text-muted-foreground hover:text-foreground">View all →</Link>
           </div>
           {d.recentAgreements.length === 0 ? (
-            <div className="rounded-2xl border border-dashed p-8 text-center text-muted-foreground">
+            <div className="rounded-2xl border-[3px] border-dashed border-foreground p-8 text-center text-muted-foreground">
               No agreements created yet.
             </div>
           ) : (
@@ -153,7 +153,7 @@ function DashboardPage() {
           </div>
           <div className="space-y-2.5">
             {d.recentActivity.length === 0 ? (
-              <div className="rounded-2xl border bg-card p-6 text-sm text-muted-foreground">
+              <div className="rounded-2xl border-[3px] border-foreground bg-card p-6 text-sm text-muted-foreground">
                 No recent activity.
               </div>
             ) : (

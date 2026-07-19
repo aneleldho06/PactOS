@@ -30,7 +30,7 @@ function Home() {
           <div className="flex flex-col justify-center">
             <motion.div
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-              className="inline-flex w-fit items-center gap-2 rounded-full border bg-card/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur"
+              className="inline-flex w-fit items-center gap-2 rounded-full border-[3px] border-foreground bg-card/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur"
             >
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               Programmable finance, powered by Stellar

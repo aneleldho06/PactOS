@@ -17,7 +17,7 @@ export function StatCard({ label, value, delta, positive = true, icon: Icon, spa
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="relative overflow-hidden rounded-2xl border bg-card p-5 shadow-elegant"
+      className="relative overflow-hidden rounded-2xl border-[3px] border-foreground bg-card p-5 shadow-elegant"
     >
       <div className="flex items-center justify-between">
         <div className="text-xs font-medium text-muted-foreground">{label}</div>

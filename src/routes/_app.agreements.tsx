@@ -68,7 +68,7 @@ function AgreementsPage() {
           </Button>
         </div>
       ) : agreements.length === 0 ? (
-        <div className="mt-12 rounded-2xl border border-dashed p-12 text-center">
+        <div className="mt-12 rounded-2xl border-[3px] border-dashed border-foreground p-12 text-center">
           <h3 className="text-lg font-medium text-foreground">No agreements found</h3>
           <p className="mt-2 text-sm text-muted-foreground">Get started by building and deploying your first smart agreement.</p>
           <Button asChild className="mt-6 rounded-full">
