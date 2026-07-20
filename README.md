@@ -4,8 +4,6 @@
 <!-- ![PactOS Banner](./public/banner.png) -->
 
 # PactOS
-<img width="500" height="500" alt="pactOS_bg_remove" src="https://github.com/user-attachments/assets/7f044b13-5582-4797-a8d9-64167a0b5314" />
-
 
 ### The Execution Layer for Financial Intent on Stellar
 
@@ -18,39 +16,7 @@
 [![Status](https://img.shields.io/badge/Status-Alpha-orange?style=flat-square)](#-current-status)
 
 </div>
-
-
----
-
-## 📖 Table of Contents
-
-- [The Problem](#-the-problem)
-- [The Solution](#-the-solution)
-- [Why Stellar](#-why-stellar)
-- [Core Features](#-core-features)
-- [Architecture](#-architecture)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Smart Contracts](#-smart-contracts)
-- [Backend](#-backend)
-- [Frontend](#-frontend)
-- [Wallet Authentication Flow](#-wallet-authentication-flow)
-- [Agreement Engine](#-agreement-engine)
-- [Getting Started](#-getting-started)
-- [Environment Variables](#-environment-variables)
-- [Local Development](#-local-development)
-- [Building & Deploying Contracts](#-building--deploying-contracts)
-- [Screenshots](#-screenshots)
-- [Demo](#-demo)
-- [Current Status](#-current-status)
-- [Roadmap](#-roadmap)
-- [Security Notes](#-security-notes)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Team](#-team)
-
----
-
+<img width="500" height="500" alt="pactOS_bg_remove" src="https://github.com/user-attachments/assets/7f044b13-5582-4797-a8d9-64167a0b5314" />
 ## 🚨 The Problem
 
 Traditional financial agreements rely on trust, intermediaries, and manual enforcement. Whether it's a freelancer payment schedule, a revenue-sharing arrangement, or a multi-party escrow — the execution of financial terms is disconnected from the terms themselves.
